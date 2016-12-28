@@ -33,6 +33,10 @@ public class SudokuGenerator {
 
 	}
 
+	public int[][] getBoard() {
+		return board;
+	}
+
 	/**
 	 * Recursive method that attempts to place every number in a cell.
 	 *

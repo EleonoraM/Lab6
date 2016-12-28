@@ -4,7 +4,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import javafx.scene.control.ChoiceBox;
+import it.polito.tdp.sudoku.model.Model;
 import it.polito.tdp.sudoku.model.SudokuGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,7 +19,8 @@ public class SudokuController {
 	
     @FXML
     private ResourceBundle resources;
-
+    @FXML
+    private ChoiceBox<Integer> combo;
     @FXML
     private URL location;
 
@@ -264,25 +266,37 @@ public class SudokuController {
 
     @FXML
     private Label lbl81;
-    
-    List<Label> labelList = new ArrayList<Label>(); 
+    @FXML
+    private Label avviso;
+
+    List<Label> labelList = new ArrayList<Label>();
+	private Model model; 
     
     @FXML
     void doGenerate(ActionEvent event){
     	// Per generare un nuova nuova griglia di Sudoku
-		SudokuGenerator sg = new SudokuGenerator();
-		int [][] matrix = sg.nextBoard(levelExpert);
-		
-		printMatrixOnScreen(matrix);
+		try {
+			SudokuGenerator sg = new SudokuGenerator();
+			int [][] matrix = sg.nextBoard(combo.getValue());
+			model.setMatrix(matrix);
+			printMatrixOnScreen(matrix);
+		} catch (Exception e) {
+
+			avviso.setText("SEL. LIVELLO");
+		}
     }
     
     @FXML
     void doSolve(ActionEvent event){
-    	
+    	model.solveSudoku();
+		System.out.println(model.getCelle().toString());
+
     }
     
     @FXML
     void initialize() {
+        assert combo != null : "fx:id=\"combo\" was not injected: check your FXML file 'Sudoku.fxml'.";
+
         assert lbl10 != null : "fx:id=\"lbl10\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl11 != null : "fx:id=\"lbl11\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl12 != null : "fx:id=\"lbl12\" was not injected: check your FXML file 'Sudoku.fxml'.";
@@ -364,7 +378,8 @@ public class SudokuController {
         assert lbl79 != null : "fx:id=\"lbl79\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl80 != null : "fx:id=\"lbl80\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl81 != null : "fx:id=\"lbl81\" was not injected: check your FXML file 'Sudoku.fxml'.";
-        
+        assert avviso != null : "fx:id=\"avviso\" was not injected: check your FXML file 'Sudoku.fxml'.";
+
         labelList.add(lbl1);
         labelList.add(lbl2);
         labelList.add(lbl3);
@@ -446,6 +461,7 @@ public class SudokuController {
         labelList.add(lbl79);
         labelList.add(lbl80);
         labelList.add(lbl81);
+       
     }
     
     
@@ -459,5 +475,12 @@ public class SudokuController {
     					counter++;
     				}
     }
+
+	public void setModel(Model model) {
+this.model=model;
+combo.getItems().add(levelEasy);
+combo.getItems().add(levelAdvanced);
+combo.getItems().add(levelExpert);
+	}
     
 }
